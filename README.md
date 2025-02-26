@@ -1,1 +1,1 @@
-Puzze Game by Javascript
+Puzzle Game by Javascript
