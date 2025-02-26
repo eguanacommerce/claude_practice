@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>숫자 맞추기 게임</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        .game-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        input {
+            padding: 10px;
+            width: 200px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #message, #stats {
+            margin: 15px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>숫자 맞추기 게임</h1>
+        <div id="stats">
+            시도 횟수: <span id="attempts">0</span> | 
+            최고 기록: <span id="best-attempts">-</span>
+        </div>
+        <input type="number" id="guess-input" placeholder="1-100 사이의 숫자를 입력하세요">
+        <button onclick="checkGuess()">추측하기</button>
+        <p id="message">게임을 시작하세요!</p>
+    </div>
+
+    <script>
+        // 게임 상태를 관리할 변수들
+        let targetNumber;
+        let attempts;
+        let bestAttempts = -;
+
+        // 게임 초기화 함수
+        function initGame() {
+            // 1-100 사이의 랜덤 숫자 생성
+            targetNumber = Math.floor(Math.random() * 100) + 1;
+            attempts = 0;
+            
+            // UI 초기화
+            document.getElementById('attempts').textContent = attempts;
+            document.getElementById('message').textContent = '게임을 시작하세요!';
+            document.getElementById('guess-input').value = '';
+        }
+
+        // 추측 체크 함수
+        function checkGuess() {
+            const guessInput = document.getElementById('guess-input');
+            const message = document.getElementById('message');
+            const attemptsDisplay = document.getElementById('attempts');
+            const bestAttemptsDisplay = document.getElementById('best-attempts');
+            
+            // 입력값 검증
+            const userGuess = parseInt(guessInput.value);
+            
+            // 유효성 검사
+            if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+                message.textContent = '1-100 사이의 유효한 숫자를 입력하세요!';
+                return;
+            }
+            
+            // 시도 횟수 증가
+            attempts++;
+            attemptsDisplay.textContent = attempts;
+            
+            // 추측 로직
+            if (userGuess === targetNumber) {
+                // 게임 성공
+                message.textContent = `? 축하합니다! ${attempts}번 만에 맞추셨습니다!`;
+                
+                // 최고 기록 업데이트
+                if (bestAttempts === -1 || attempts < bestAttempts) {
+                    bestAttempts = attempts;
+                    bestAttemptsDisplay.textContent = bestAttempts;
+                }
+                
+                // 게임 재시작
+                setTimeout(initGame, 2000);
+            } else if (userGuess < targetNumber) {
+                message.textContent = '? 더 높은 숫자를 입력하세요!';
+            } else {
+                message.textContent = '? 더 낮은 숫자를 입력하세요!';
+            }
+            
+            // 입력창 초기화
+            guessInput.value = '';
+        }
+
+        // 게임 시작
+        initGame();
+
+        // Enter 키 입력 지원
+        document.getElementById('guess-input').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                checkGuess();
+            }
+        });
+    </script>
+</body>
+</html>
